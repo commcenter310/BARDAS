@@ -150,6 +150,7 @@ main{padding:32px 40px;max-width:1400px;margin:0 auto}
     <button class="tb" onclick="sw('mun',this)">Por Municipio</button>
     <button class="tb" onclick="sw('resp',this)">Top 10 Mejores</button>
     <button class="tb" onclick="sw('buscar',this)">🔍 Buscar Responsable</button>
+    <button class="tb" onclick="sw('ultimas',this)">🕐 Últimas 10</button>
   </div>
 
   <div id="tab-df" class="tc active">
@@ -203,6 +204,21 @@ main{padding:32px 40px;max-width:1400px;margin:0 auto}
       </div>
     </div>
     <div class="nr" id="nr">No se encontró ningún responsable con ese nombre.</div>
+  </div>
+  <div id="tab-ultimas" class="tc">
+    <div class="stitle">ÚLTIMAS 10 BARDAS REGISTRADAS</div>
+    <table class="rt" id="ultimas-tbl">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Sección</th>
+          <th>Municipio</th>
+          <th style="text-align:center">DF</th>
+          <th style="text-align:center">DL</th>
+        </tr>
+      </thead>
+      <tbody id="ultimas-body"></tbody>
+    </table>
   </div>
 </main>
 
@@ -278,6 +294,37 @@ function buildAll() {
   buildDF();
   buildMun();
   buildResp();
+  buildUltimas();
+}
+
+function parseDate(str) {
+  // Formato: 21/4/2026 14:10:53
+  const parts = str.split(' ');
+  const dmy = parts[0].split('/');
+  const time = parts[1] || '00:00:00';
+  return new Date(dmy[2], dmy[1]-1, dmy[0], ...time.split(':'));
+}
+
+function buildUltimas() {
+  const sorted = [...ALL_DATA]
+    .filter(r => r.fecha)
+    .sort((a, b) => parseDate(b.fecha) - parseDate(a.fecha))
+    .slice(0, 10);
+
+  const tbody = document.getElementById('ultimas-body');
+  if (!tbody) return;
+  tbody.innerHTML = sorted.map(r => {
+    const d = parseDate(r.fecha);
+    const fecha = d.toLocaleDateString('es-MX', {day:'2-digit', month:'short', year:'numeric'});
+    const hora  = d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+    return '<tr>' +
+      '<td class="dt">' + fecha + ' ' + hora + '</td>' +
+      '<td class="st">' + (r.seccion||'') + '</td>' +
+      '<td class="rn">' + (r.municipio||'') + '</td>' +
+      '<td style="text-align:center;font-family:'IBM Plex Mono',monospace;color:var(--go)">' + (r.df||'') + '</td>' +
+      '<td style="text-align:center;font-family:'IBM Plex Mono',monospace;color:var(--tm)">' + (r.dl||'') + '</td>' +
+      '</tr>';
+  }).join('');
 }
 
 function norm(s) {
