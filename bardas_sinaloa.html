@@ -321,8 +321,8 @@ function buildUltimas() {
       '<td class="dt">' + fecha + ' ' + hora + '</td>' +
       '<td class="st">' + (r.seccion||'') + '</td>' +
       '<td class="rn">' + (r.municipio||'') + '</td>' +
-      '<td style="text-align:center;font-family:'IBM Plex Mono',monospace;color:var(--go)">' + (r.df||'') + '</td>' +
-      '<td style="text-align:center;font-family:'IBM Plex Mono',monospace;color:var(--tm)">' + (r.dl||'') + '</td>' +
+      '<td style="text-align:center;color:var(--go)">' + (r.df||'') + '</td>' +
+      '<td style="text-align:center;color:var(--tm)">' + (r.dl||'') + '</td>' +
       '</tr>';
   }).join('');
 }
@@ -526,4 +526,3 @@ setInterval(fetchData, 3 * 60 * 1000);
 </script>
 </body>
 </html>
-<!-- v2 -->
